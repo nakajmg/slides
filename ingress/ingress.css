@@ -1,0 +1,44 @@
+
+body {
+  background-color: #222;
+  color: #59fbea;
+  color: #28f428;
+  color: #ebbc4a;
+  color: #00c2ff;
+/*   color: #4a9299; */
+}
+
+h1 {
+  font-size: 270%;
+}
+
+.slide {
+  
+  border: 1px solid;
+  border: 1px solid #4a9299;
+}
+
+a, a:link, a:visited {
+  color: #28f428;
+}
+
+.showcase img {
+  max-width: 300px
+}
+.showcase p , .showcase p + ul {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 430px;
+}
+li > ul {
+  padding-top: 0;
+  font-size: 80%;
+}
+
+h4 {
+  margin-bottom: 0;
+}
+h4 + ul {
+  margin: 0;
+  padding-top: 10px;
+}

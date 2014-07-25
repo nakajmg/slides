@@ -1,0 +1,970 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Dive into Ingress!!</title>
+  <style type="text/css">
+    body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  background-color: #f7f7f7;
+  font-size: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+}
+
+.slide-content {
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  margin: 80px auto 0 auto;
+  padding: 30px;
+
+  font-weight: 200;
+  font-size: 200%;
+  line-height: 1.375;
+}
+
+.controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.arrow {
+  width: 0; height: 0;
+  border: 30px solid #333;
+  float: left;
+  margin-right: 30px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.prev {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+
+  border-left-width: 0;
+  border-right-width: 50px;
+}
+
+.next {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+
+  border-left-width: 50px;
+  border-right-width: 0;
+}
+
+.prev:hover {
+  border-right-color: #888;
+  cursor: pointer;
+}
+
+.next:hover {
+  border-left-color: #888;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 300%;
+  line-height: 1.2;
+  text-align: center;
+  margin: 170px 0 0;
+}
+
+h2 {
+  font-size: 100%;
+  line-height: 1.2;
+  margin: 5px 0;
+  text-align: center;
+  font-weight: 200;
+}
+
+h3 {
+  font-size: 140%;
+  line-height: 1.2;
+  border-bottom: 1px solid #aaa;
+  margin: 0;
+  padding-bottom: 15px;
+}
+
+ul {
+  padding: 20px 0 0 60px;
+  font-weight: 200;
+  line-height: 1.375;
+}
+
+.author h1 {
+  font-size: 170%;
+  font-weight: 200;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.author h3 {
+  font-weight: 100;
+  text-align: center;
+  font-size: 95%;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: #44a4dd;
+}
+
+a:hover {
+  color: #66b5ff;
+}
+
+pre {
+  font-size: 60%;
+  line-height: 1.3;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 3px;
+  background-color: #b4b4b4;
+
+  -webkit-transition: width 0.05s ease-out;
+  -moz-transition: width 0.05s ease-out;
+  -o-transition: width 0.05s ease-out;
+  transition: width 0.05s ease-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 850px) {
+
+  body {
+    font-size: 70%;
+  }
+
+  .slide-content {
+    width: auto;
+  }
+
+  img {
+    width: 100%;
+  }
+
+  h1 {
+    margin-top: 120px;
+  }
+
+  .prev, .prev:hover {
+    border-right-color: rgba(135, 135, 135, 0.5);
+  }
+
+  .next, .next:hover {
+    border-left-color: rgba(135, 135, 135, 0.5);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 50%;
+    overflow: hidden;
+  }
+
+  .slide-content {
+    padding: 10px;
+    margin-top: 10px;
+    height: 340px;
+  }
+
+  h1 {
+    margin-top: 50px;
+  }
+
+  ul {
+    padding-left: 25px;
+  }
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    size: letter;
+  }
+
+  .hidden {
+    display: inline;
+  }
+
+  html {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  body {
+    margin: 0 auto !important;
+    border: 0;
+    padding: 0;
+    float: none !important;
+    overflow: visible;
+    background: none !important;
+    font-size: 52%;
+  }
+
+  .progress, .controls {
+    display: none;
+  }
+
+  .slide {
+    position: static;
+  }
+
+  .slide-content {
+    border: 1px solid #222;
+    margin-top: 0;
+    margin-bottom: 40px;
+    height: 3.5in;
+    overflow: visible;
+  }
+
+  .slide:nth-child(even) {
+    /* 2 slides per page */
+    page-break-before: always;
+  }
+}
+
+/*
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+*/
+
+code, pre {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  overflow: auto;
+  padding: 6px 10px;
+}
+
+code {
+  padding: 0 5px;
+}
+
+pre>code {
+  margin: 0; padding: 0;
+  border: none;
+  background: transparent;
+}
+
+pre .comment,
+pre .template_comment,
+pre .diff .header,
+pre .javadoc {
+  color: #998;
+  font-style: italic
+}
+
+pre .keyword,
+pre .css .rule .keyword,
+pre .winutils,
+pre .javascript .title,
+pre .nginx .title,
+pre .subst,
+pre .request,
+pre .status {
+  color: #333;
+  font-weight: bold
+}
+
+pre .number,
+pre .hexcolor,
+pre .ruby .constant {
+  color: #099;
+}
+
+pre .string,
+pre .tag .value,
+pre .phpdoc,
+pre .tex .formula {
+  color: #d14
+}
+
+pre .title,
+pre .id {
+  color: #900;
+  font-weight: bold
+}
+
+pre .javascript .title,
+pre .lisp .title,
+pre .clojure .title,
+pre .subst {
+  font-weight: normal
+}
+
+pre .class .title,
+pre .haskell .type,
+pre .vhdl .literal,
+pre .tex .command {
+  color: #458;
+  font-weight: bold
+}
+
+pre .tag,
+pre .tag .title,
+pre .rules .property,
+pre .django .tag .keyword {
+  color: #000080;
+  font-weight: normal
+}
+
+pre .attribute,
+pre .variable,
+pre .lisp .body {
+  color: #008080
+}
+
+pre .regexp {
+  color: #009926
+}
+
+pre .class {
+  color: #458;
+  font-weight: bold
+}
+
+pre .symbol,
+pre .ruby .symbol .string,
+pre .lisp .keyword,
+pre .tex .special,
+pre .prompt {
+  color: #990073
+}
+
+pre .built_in,
+pre .lisp .title,
+pre .clojure .built_in {
+  color: #0086b3
+}
+
+pre .preprocessor,
+pre .pi,
+pre .doctype,
+pre .shebang,
+pre .cdata {
+  color: #999;
+  font-weight: bold
+}
+
+pre .deletion {
+  background: #fdd
+}
+
+pre .addition {
+  background: #dfd
+}
+
+pre .diff .change {
+  background: #0086b3
+}
+
+pre .chunk {
+  color: #aaa
+}
+
+
+body {
+  background-color: #222;
+  color: #59fbea;
+  color: #28f428;
+  color: #ebbc4a;
+  color: #00c2ff;
+/*   color: #4a9299; */
+}
+
+h1 {
+  font-size: 270%;
+}
+
+.slide {
+  
+  border: 1px solid;
+  border: 1px solid #4a9299;
+}
+
+a, a:link, a:visited {
+  color: #28f428;
+}
+
+.showcase img {
+  max-width: 300px
+}
+.showcase p , .showcase p + ul {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 430px;
+}
+li > ul {
+  padding-top: 0;
+  font-size: 80%;
+}
+
+h4 {
+  margin-bottom: 0;
+}
+h4 + ul {
+  margin: 0;
+  padding-top: 10px;
+}
+
+  </style>
+</head>
+<body>
+    <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+
+  <div class="slide  " id="slide-1">
+    <section class="slide-content"><h1 id="how-to-ingress-">How to Ingress!!</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-2">
+    <section class="slide-content"><h3 id="ingress-">Ingressの目的</h3>
+<h1 id="-vs-">青 vs 緑</h1>
+<h2 id="-">陣取り合戦</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-3">
+    <section class="slide-content"><h3 id="-">陣取り？</h3>
+<h1 id="-">ポータルを取りあう</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-4">
+    <section class="slide-content"><h3 id="ingress-">Ingress用語</h3>
+<ul>
+<li>XM</li>
+<li>AP</li>
+<li>ITEM<ul>
+<li>MOD</li>
+</ul>
+</li>
+<li>Portal</li>
+<li>Hack</li>
+<li>Resonator</li>
+<li>Link<ul>
+<li>Control field</li>
+</ul>
+</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-5">
+    <section class="slide-content"><h3 id="xm-">XM(エキゾチックマター)</h3>
+<h4 id="-">スタミナみたいなの (色々な行動に使う</h4>
+<ul>
+<li>Hack</li>
+<li>ResonatorのDeploy<ul>
+<li>Recharge</li>
+<li>Fire XMP(攻撃)</li>
+</ul>
+</li>
+<li>Link</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden  " id="slide-6">
+    <section class="slide-content"><h3 id="xm-">XMの取得方法</h3>
+<h4 id="-">マップ上の青白いちっちゃい物体があるとこに移動すると増える</h4>
+<p>※ 画面上部のバーをタップすると量が見れる</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-7">
+    <section class="slide-content"><h3 id="ap-">AP(アクセスポイント)</h3>
+<h4 id="-">経験値</h4>
+<p>レベルアップに必要。まずはとにかくレベル上げ(後述)</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><h3 id="item">Item</h3>
+<ul>
+<li>Resonator</li>
+<li>XMPバースター</li>
+<li>Ultra Strike</li>
+<li>Virus &amp; Refactor</li>
+<li>Power Cube</li>
+<li>Portal Key</li>
+</ul>
+<p><a href="https://support.google.com/ingress/answer/4624165?hl=ja&amp;ref_topic=4624340">※ ITEM一覧</a></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
+    <section class="slide-content"><h3 id="mod">MOD</h3>
+<h4 id="portal-">Portalに設置するアイテム</h4>
+<ul>
+<li>Sheild</li>
+<li>Heat sink</li>
+<li>Multi-hack</li>
+<li>Link Amp</li>
+<li>Force Amp</li>
+<li>Turret</li>
+</ul>
+<p><a href="http://ingresswiki.wiki.fc2.com/wiki/%E3%82%A2%E3%82%A4%E3%83%86%E3%83%A0%EF%BC%88items%EF%BC%89">※ MOD一覧</a></p>
+</section>
+  </div>
+  <div class="slide hidden  showcase" id="slide-10">
+    <section class="slide-content"><h3 id="portal">Portal</h3>
+<h4 id="-">拠点</h4>
+<p><img src="01.png" alt="png"></p>
+<ul>
+<li>MAP上にある光の柱みたいなやつ</li>
+<li>IngressはこのPortalの取り合いをする</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-11">
+    <section class="slide-content"><h3 id="portal-">Portalの状態</h3>
+<ul>
+<li>白 = 中立</li>
+<li>青 = 青陣営</li>
+<li>緑 = 緑陣営</li>
+</ul>
+<p>中立はResonatorを指すことで自陣営のものにできる</p>
+<p>※ ただしResonatorは何もしないと3日程度で壊れる。敵の攻撃を受けたらもっと早く</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-12">
+    <section class="slide-content"><h3 id="portal-">Portalの役目</h3>
+<ul>
+<li>Hackして<ul>
+<li>AP取得</li>
+<li>MOD取得</li>
+</ul>
+</li>
+<li>Linkして<ul>
+<li>AP取得</li>
+<li>CF形成 (陣地を作る)</li>
+</ul>
+</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-13">
+    <section class="slide-content"><h3 id="hack">Hack</h3>
+<h4 id="-ap-">アイテムとAPの入手</h4>
+<ul>
+<li>自色だとResonator(確定) + α</li>
+<li>敵色だと100AP<ul>
+<li>XMが減る (反撃してくる)</li>
+</ul>
+</li>
+</ul>
+<p>とにかくPortalをHackする</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-14">
+    <section class="slide-content"><h3 id="hack-">Hack回数の制限</h3>
+<h4 id="-portal-5-4-">同一Portalに対して5分ごとに4回まで</h4>
+<p>その後4時間はHackできない</p>
+<p>※ MODを使うと連続Hack可能</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-15">
+    <section class="slide-content"><h3 id="portal-">Portalのレベル</h3>
+<h4 id="-resonator-8-">全Resonatorのレベルを足して8で割った値</h4>
+<ul>
+<li>レベルによって変わるもの<ul>
+<li>耐久度</li>
+<li>反撃力</li>
+<li>Hackする際のXMコスト<ul>
+<li>Portalレベル * 50XM</li>
+<li>敵Portalは * 100XM + 反撃 ?</li>
+</ul>
+</li>
+<li>Link可能距離</li>
+</ul>
+</li>
+</ul>
+<p>レベルが高いほど壊れにくい(壊しにくい)</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-16">
+    <section class="slide-content"><h3 id="resonator">Resonator</h3>
+<h4 id="portal-capture-deploy-">PortalをCapture(制圧)するためにDeploy(設置する)</h4>
+<ul>
+<li>8個設置すると制圧</li>
+<li>Resonatorにもレベルがある</li>
+<li>DeployするとAP獲得</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-17">
+    <section class="slide-content"><h3 id="resonator-">Resonatorのレベル</h3>
+<ul>
+<li>最大8</li>
+<li>Resonatorのレベルごとに一人が指せる本数が決まってる</li>
+<li>1:8, 2~4:4, 5~7:2, 8:1</li>
+</ul>
+<p>Portalのレベルを8にするには8人のエージェントが必要</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-18">
+    <section class="slide-content"><h3 id="-">なにすればいいの？</h3>
+<h1 id="-">まずはレベル上げ</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-19">
+    <section class="slide-content"><h3 id="-">レベルを上げるためには？</h3>
+<h1 id="ap-">APを稼ぐ</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-20">
+    <section class="slide-content"><h3 id="ap-">AP取得方法</h3>
+<ul>
+<li>敵PortalへのHACK: 100AP</li>
+<li>ResonatorのDeploy: 125AP<ul>
+<li>1個目のやつだけ + 500AP</li>
+<li>8個目は + 250AP</li>
+</ul>
+</li>
+<li>他人のResonatorのupgrade: 65AP</li>
+<li>自軍ResonatorのRecharge: 10AP</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-21">
+    <section class="slide-content"><h3 id="ap-">AP取得方法</h3>
+<ul>
+<li>MODの設置: 125AP<ul>
+<li>1Portalに2個まで</li>
+</ul>
+</li>
+<li>LINK: 313AP</li>
+<li>CF作成: [1250+313] 1563AP</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-22">
+    <section class="slide-content"><h3 id="ap-">AP取得方法</h3>
+<ul>
+<li>敵Resonatorの破壊: 75AP</li>
+<li>敵Linkの破壊: 187AP</li>
+<li>敵CFの破壊: 750AP</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-23">
+    <section class="slide-content"><h3 id="ap-">AP取得方法</h3>
+<ul>
+<li>ユーザ招待: 3000AP</li>
+<li>Portal申請承認: 1000AP</li>
+<li>Portal写真追加: 500AP</li>
+<li>Portal名称変更: 200AP</li>
+<li>Portal説明文の変更&amp;承認: 200AP</li>
+<li>パスコードによる取得: 100 ~ 500AP</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-24">
+    <section class="slide-content"><h1 id="-hack-">まずはとにかくHACK！</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-25">
+    <section class="slide-content"><h3 id="-">つぎは？</h3>
+<h4 id="resonator-deploy-">ResonatorのDeploy!</h4>
+<ul>
+<li>Resonator 8 * 125 + 500 + 250</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-26">
+    <section class="slide-content"><h3 id="-">つぎは？</h3>
+<h4 id="link-cf-">LinkとCF作成！</h4>
+<ul>
+<li>Link: 313AP</li>
+<li>CF作成: 1563AP</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-27">
+    <section class="slide-content"><h3 id="-">つぎは？</h3>
+<h4 id="-resonator-">敵Resonator破壊！</h4>
+<ul>
+<li>Linkが張られていればお得！<ul>
+<li>75AP * 8 + 187AP ( + 750AP )</li>
+</ul>
+</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-28">
+    <section class="slide-content"><h3 id="-">まとめて？</h3>
+<ul>
+<li>敵HACK</li>
+<li>攻撃 or Recharge</li>
+<li>DeployしてLINK！</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-29">
+    <section class="slide-content"><h1 id="-">テクニック</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-30">
+    <section class="slide-content"><h3 id="-">テクニック集</h3>
+<ul>
+<li>グリフハック</li>
+<li>Deployするときの位置</li>
+<li>Fire XMPするときの位置</li>
+<li>Fire XMPのタイミング</li>
+<li>Deployするスロット</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-31">
+    <section class="slide-content"><h3 id="-">グリフハック</h3>
+<h4 id="-">なんかアイテムが入手しやすくなる</h4>
+<ul>
+<li>HACKボタンを長押してHACK</li>
+<li>一筆書きゲーム</li>
+<li>失敗しても大丈夫</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-32">
+    <section class="slide-content"><h3 id="resonator-">Resonatorの位置</h3>
+<h4 id="deploy-">Deployは円の半径が最大になる位置に指す！</h4>
+<ul>
+<li>攻撃を受けるときに有利になる</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-33">
+    <section class="slide-content"><h3 id="fire-xmp-">Fire XMPするときの位置</h3>
+<h4 id="-resonator-">低レベルのうちはResonatorに近づいて！</h4>
+<ul>
+<li>距離による減衰を最小限に</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-34">
+    <section class="slide-content"><h3 id="fire-xmp-">Fire XMPのタイミング</h3>
+<h4 id="-up-">タイミングよく打つことで威力UP！</h4>
+<ul>
+<li>連打よりタメうち</li>
+<li>最大で20%ダメージアップ</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-35">
+    <section class="slide-content"><h3 id="deploy-">Deployするスロットの位置</h3>
+<h4 id="-resonator-">低レベルResonatorが偏らないように！</h4>
+<ul>
+<li>バランスよくDeploy</li>
+<li>攻撃うけたとき低レベルが密集してると壊されやすい</li>
+<li>私有地とか民家とかに重なる方向に高レベルを指せると◎</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-36">
+    <section class="slide-content"><h3 id="-">まとめ</h3>
+<ul>
+<li>レベルあげよう</li>
+<li>HACKしてAP＋ITEMゲット</li>
+<li>効率よく攻撃</li>
+<li>Deploy &amp; Link</li>
+<li>テクニックを活用</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-37">
+    <section class="slide-content"><h3 id="-">リンク</h3>
+<ul>
+<li><a href="http://ingressjp.blogspot.jp/2014/02/sms.html">SMS認証</a></li>
+<li><a href="https://support.google.com/ingress/answer/3205429?hl=ja&amp;ref_topic=4624340">公式初心者ガイド</a></li>
+<li><a href="http://ingresswiki.wiki.fc2.com/">日本語Wiki</a></li>
+<li><a href="http://lifememo.jp/ingress/ingress-level-guide/">行動指針</a></li>
+<li><a href="http://ingressjp.blogspot.jp/p/blog-page_7716.html">AP獲得</a></li>
+<li><a href="http://anond.hatelabo.jp/20140722203721">新しくエージェントになった人へ</a></li>
+<li><a href="http://www.teradas.net/archives/13544/">【攻略】Ingress初心者が早く知っておいた方が良い事まとめ【イングレス】</a></li>
+<li><a href="http://makipapa.seesaa.net/article/402475305.html#gsc.tab=0">iOS「Ingress」始めてからLv5になるまでに気をつけていた七つの心得</a></li>
+</ul>
+</section>
+  </div>
+
+  <div class="controls">
+    <div class="arrow prev"></div>
+    <div class="arrow next"></div>
+  </div>
+
+
+  <script type="text/javascript">
+    /**
+ * Returns the current page number of the presentation.
+ */
+function currentPosition() {
+  return parseInt(document.querySelector('.slide:not(.hidden)').id.slice(6));
+}
+
+
+/**
+ * Navigates forward n pages
+ * If n is negative, we will navigate in reverse
+ */
+function navigate(n) {
+  var position = currentPosition();
+  var numSlides = document.getElementsByClassName('slide').length;
+
+  /* Positions are 1-indexed, so we need to add and subtract 1 */
+  var nextPosition = (position - 1 + n) % numSlides + 1;
+
+  /* Normalize nextPosition in-case of a negative modulo result */
+  nextPosition = (nextPosition - 1 + numSlides) % numSlides + 1;
+
+  document.getElementById('slide-' + position).classList.add('hidden');
+  document.getElementById('slide-' + nextPosition).classList.remove('hidden');
+
+  updateProgress();
+  updateURL();
+  updateTabIndex();
+}
+
+
+/**
+ * Updates the current URL to include a hashtag of the current page number.
+ */
+function updateURL() {
+  window.history.replaceState({} , null, '#' + currentPosition());
+}
+
+
+/**
+ * Sets the progress indicator.
+ */
+function updateProgress() {
+  var progressBar = document.querySelector('.progress-bar');
+
+  if (progressBar !== null) {
+    var numSlides = document.getElementsByClassName('slide').length;
+    var position = currentPosition() - 1;
+    var percent = (numSlides === 1) ? 100 : 100 * position / (numSlides - 1);
+    progressBar.style.width = percent.toString() + '%';
+  }
+}
+
+
+/**
+ * Removes tabindex property from all links on the current slide, sets
+ * tabindex = -1 for all links on other slides. Prevents slides from appearing
+ * out of control.
+ */
+function updateTabIndex() {
+  var allLinks = document.querySelectorAll('.slide a');
+  var position = currentPosition();
+  var currentPageLinks = document.getElementById('slide-' + position).querySelectorAll('a');
+  var i;
+
+  for (i = 0; i < allLinks.length; i++) {
+    allLinks[i].setAttribute('tabindex', -1);
+  }
+
+  for (i = 0; i < currentPageLinks.length; i++) {
+    currentPageLinks[i].removeAttribute('tabindex');
+  }
+}
+
+/**
+ * Determines whether or not we are currently in full screen mode
+ */
+function isFullScreen() {
+  return document.fullscreenElement ||
+         document.mozFullScreenElement ||
+         document.webkitFullscreenElement ||
+         document.msFullscreenElement;
+}
+
+/**
+ * Toggle fullScreen mode on document element.
+ * Works on chrome (>= 15), firefox (>= 9), ie (>= 11), opera(>= 12.1), safari (>= 5).
+ */
+function toggleFullScreen() {
+  /* Convenient renames */
+  var docElem = document.documentElement;
+  var doc = document;
+
+  docElem.requestFullscreen =
+      docElem.requestFullscreen ||
+      docElem.msRequestFullscreen ||
+      docElem.mozRequestFullScreen ||
+      docElem.webkitRequestFullscreen.bind(docElem, Element.ALLOW_KEYBOARD_INPUT);
+
+  doc.exitFullscreen =
+      doc.exitFullscreen ||
+      doc.msExitFullscreen ||
+      doc.mozCancelFullScreen ||
+      doc.webkitExitFullscreen;
+
+  isFullScreen() ? doc.exitFullscreen() : docElem.requestFullscreen();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Update the tabindex to prevent weird slide transitioning
+  updateTabIndex();
+
+  // If the location hash specifies a page number, go to it.
+  var page = window.location.hash.slice(1);
+  if (page) {
+    navigate(parseInt(page) - 1);
+  }
+
+  document.onkeydown = function (e) {
+    var kc = e.keyCode;
+
+    // left, down, H, J, backspace, PgUp - BACK
+    // up, right, K, L, space, PgDn - FORWARD
+    // enter - FULLSCREEN
+    if (kc === 37 || kc === 40 || kc === 8 || kc === 72 || kc === 74 || kc === 33) {
+      navigate(-1);
+    } else if (kc === 38 || kc === 39 || kc === 32 || kc === 75 || kc === 76 || kc === 34) {
+      navigate(1);
+    } else if (kc === 13) {
+      toggleFullScreen();
+    }
+  };
+
+  if (document.querySelector('.next') && document.querySelector('.prev')) {
+    document.querySelector('.next').onclick = function (e) {
+      e.preventDefault();
+      navigate(1);
+    };
+
+    document.querySelector('.prev').onclick = function (e) {
+      e.preventDefault();
+      navigate(-1);
+    };
+  }
+});
+
+
+  </script>
+</body>
+</html>
